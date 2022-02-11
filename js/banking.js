@@ -1,36 +1,59 @@
-document.getElementById('deposit-btn').addEventListener('click', function(){
-    const newDepositInput = document.getElementById('deposite-amount');
+function getInputValue(inputId){
+    const newDepositInput = document.getElementById(inputId);
     const newDepositAmountText = newDepositInput.value;
     const newDepositAmount = parseFloat(newDepositAmountText);
-
-    const depositTotal = document.getElementById('deposit-total');
+    newDepositInput.value = '';
+    return newDepositAmount;
+}
+function updateTotalFeild(totalFeildId, newDepositAmount){
+    const depositTotal = document.getElementById(totalFeildId);
     const newDepositTotalText = depositTotal.innerText;
     const newDepositTotal = parseFloat(newDepositTotalText)
     const newDepositBalance = newDepositTotal + newDepositAmount;
     depositTotal.innerText = newDepositBalance;
-    newDepositInput.value = '';
+}
+function getCurrentBalance(){
     const currentBalance = document.getElementById('balance-total');
     const newCurrentBalanceText = currentBalance.innerText;
     const newCurrentBalance = parseFloat(newCurrentBalanceText);
-    const balanceUpdate = newCurrentBalance + newDepositAmount;
-    currentBalance.innerText =  balanceUpdate;
+    return newCurrentBalance;
+}
+function updateBalanceFeild(newDepositAmount, isAdd){
+    const currentBalance = document.getElementById('balance-total');
+    const newCurrentBalance = getCurrentBalance();
+    // const newCurrentBalanceText = currentBalance.innerText;
+    // const newCurrentBalance = parseFloat(newCurrentBalanceText);
+    
+    if(isAdd == true){
+        const balanceUpdate = newCurrentBalance + newDepositAmount;
+        currentBalance.innerText =  balanceUpdate;
+    }
+    else{
+        const balanceUpdate = newCurrentBalance - newDepositAmount;
+        currentBalance.innerText = balanceUpdate;
+    }
+}
+
+document.getElementById('deposit-btn').addEventListener('click', function(){
+    const newDepositAmount = getInputValue('deposite-amount');
+    
+    if( newDepositAmount > 0){
+        updateTotalFeild('deposit-total', newDepositAmount);
+        updateBalanceFeild(newDepositAmount, true);
+    }
+    
+    
     
 });
 document.getElementById('withdraw-btn').addEventListener('click', function(){
-    const newWithdrewInput = document.getElementById('withdraw-amount');
-    const newWithdrewAmountText = newWithdrewInput.value
-    const newWithdrewAmount = parseFloat(newWithdrewAmountText);
+    
+    const newWithdrewAmount = getInputValue('withdraw-amount');
+    const currentBalance = getCurrentBalance();
+    if(newWithdrewAmount > 0 && currentBalance > newWithdrewAmount){
+        updateTotalFeild('withdraw-total', newWithdrewAmount);
+        updateBalanceFeild(newWithdrewAmount, false);
+    }
+    
 
-    const withdrawTotal = document.getElementById('withdraw-total');
-    const newWithdrewTotalText = withdrawTotal.innerText;
-    const newWithdrewTotal = parseFloat(newWithdrewTotalText);
-    const newWithdrewBalance = newWithdrewTotal + newWithdrewAmount;
-    withdrawTotal.innerText = newWithdrewBalance;
-    newWithdrewInput.value = '';
-
-    const currentBalance = document.getElementById('balance-total');
-    const newCurrentBalanceText = currentBalance.innerText;
-    const newCurrentBalance = parseFloat(newCurrentBalanceText);
-    const balanceUpdate = newCurrentBalance - newWithdrewAmount;
-    currentBalance.innerText = balanceUpdate;
-} )
+    
+} );
